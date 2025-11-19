@@ -150,7 +150,7 @@ condition:
   	| and_condition ;
 
   and_condition:
-    and_condition ANDOP not_condition
+    and_condition ANDOP not_condition 
   	| not_condition ;
 
 not_condition:
@@ -166,10 +166,10 @@ expression:
 	term ;
       
 term:
-	term MULOP power |
+	term MULOP primary {$$ = evaluateArithmetic($1, $2, $3);}  |
 	term REMOP power |
-    power ;
-
+	primary ;
+	
 power:
 	factor EXPOP power |
     factor ;
