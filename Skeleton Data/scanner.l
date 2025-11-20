@@ -30,6 +30,27 @@ static int hex_to_int(const char* s) {
     }
     return v;
 }
+
+static int char_to_int(const char* yytext) {
+    // yytext looks like: 'a' or '\n' or '\f' etc.
+    if (yytext[1] == '\\') {
+        switch (yytext[2]) {
+            case 'n': return '\n';   
+            case 't': return '\t';   
+            case 'r': return '\r';   
+            case 'f': return '\f';  
+            case 'b': return '\b';   
+            case '\\': return '\\';  
+            case '\'': return '\'';  
+            case '\"': return '\"';  
+            case 'a': return '\a';   
+            case 'v': return '\v';   
+            default:  return yytext[2]; 
+        }
+    } else {
+        return yytext[1]; // ordinary character
+    }
+}
 %}
 
 %option noyywrap
@@ -97,7 +118,7 @@ then		{ ECHO; return(THEN); }
 {real}      { ECHO; yylval.value = atof(yytext); return(REAL_LITERAL); }
 {hex}    { ECHO; yylval.value = (double)hex_to_int(yytext + 1); return(INT_LITERAL); }
 {dec}		{ ECHO; yylval.value = atoi(yytext); return(INT_LITERAL); }
-{char}		{ ECHO; return(CHAR_LITERAL); }
+{char}	{ ECHO; yylval.value = (double)char_to_int(yytext); return CHAR_LITERAL; }
 {punc}		{ ECHO; return(yytext[0]); }
 .			{ ECHO; appendError(LEXICAL, yytext); }
 
