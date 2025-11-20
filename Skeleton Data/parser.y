@@ -154,7 +154,7 @@ condition:
   	| not_condition ;
 
 not_condition:
-    NOTOP not_condition
+    NOTOP not_condition 
   	| relation ;
 
 relation:

@@ -17,6 +17,19 @@ using namespace std;
 #include "listing.h"
 #include "tokens.h"
 
+static int hex_to_int(const char* s) {
+    int v = 0;
+    while (*s) {
+        char c = *s++;
+        int d;
+        if (c >= '0' && c <= '9') d = c - '0';
+        else if (c >= 'a' && c <= 'f') d = 10 + (c - 'a');
+        else if (c >= 'A' && c <= 'F') d = 10 + (c - 'A');
+        else break;
+        v = (v << 4) + d; // v = v*16 + digit
+    }
+    return v;
+}
 %}
 
 %option noyywrap
@@ -81,8 +94,8 @@ then		{ ECHO; return(THEN); }
 
 {id}		{ ECHO; yylval.iden = (CharPtr)malloc(yyleng + 1); 
 			strcpy(yylval.iden, yytext); return(IDENTIFIER);}
-{real}      { ECHO; return(REAL_LITERAL); }
-{hex}       { ECHO; return(INT_LITERAL); }
+{real}      { ECHO; yylval.value = atof(yytext); return(REAL_LITERAL); }
+{hex}    { ECHO; yylval.value = (double)hex_to_int(yytext + 1); return(INT_LITERAL); }
 {dec}		{ ECHO; yylval.value = atoi(yytext); return(INT_LITERAL); }
 {char}		{ ECHO; return(CHAR_LITERAL); }
 {punc}		{ ECHO; return(yytext[0]); }
