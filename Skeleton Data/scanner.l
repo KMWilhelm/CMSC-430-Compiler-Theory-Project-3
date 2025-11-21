@@ -70,12 +70,14 @@ real    [0-9]*\.[0-9]+([eE][+-]?[0-9]+)?
 {ws}		{ ECHO; }
 {comment}	{ ECHO; nextLine(); }
 {line}		{ ECHO; nextLine(); }
-"+"|"-"		{ ECHO; yylval.oper = ADD; return(ADDOP); }
-"*"|"/"		{ ECHO; yylval.oper = MULTIPLY; return(MULOP); }
-"%"     { ECHO; return(REMOP); }
-"^"		{ ECHO; return(EXPOP); }
-"~"		{ ECHO; return(NEGOP); }
-"&"		{ ECHO; yylval.oper = AND; return(ANDOP); }
+"+"		   { ECHO; yylval.oper = ADD; return(ADDOP); }
+"-"         { ECHO; yylval.oper = SUBTRACT; return(ADDOP); }
+"*"      	{ ECHO; yylval.oper = MULTIPLY; return(MULOP); }
+"/"         { ECHO; yylval.oper = DIVIDE; return(MULOP); }
+"%"         { ECHO; yylval.oper = REMAINDER; return(REMOP); }
+"^"		   { ECHO; yylval.oper = EXPONENT; return(EXPOP); }
+"~"		   { ECHO; yylval.oper = NEGATE; return(NEGOP); }
+"&"		   { ECHO; yylval.oper = AND; return(ANDOP); }
 
 "=>"		{ ECHO; return(ARROW); }
 "|"			{ ECHO; return(OROP); }

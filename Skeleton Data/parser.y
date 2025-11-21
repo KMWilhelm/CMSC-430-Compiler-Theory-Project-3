@@ -49,9 +49,14 @@ double result;
 	RETURNS SWITCH WHEN ELSIF ENDFOLD ENDIF FOLD IF LEFT REAL RIGHT THEN
 
 %type <value> body statement_ statement cases case expression term primary
-	 condition relation
+	 condition relation factor
 
 %type <list> list expressions
+
+%left ADDOP
+%left MULOP REMOP
+%right EXPOP
+%right NEGOP
 
 %%
 
@@ -166,17 +171,14 @@ expression:
 	term ;
       
 term:
-	term MULOP primary {$$ = evaluateArithmetic($1, $2, $3);}  |
-	term REMOP power |
-	primary ;
-	
-power:
-	factor EXPOP power |
-    factor ;
+	term MULOP factor {$$ = evaluateArithmetic($1, $2, $3);}  |
+	term REMOP factor {$$ = evaluateArithmetic($1, $2, $3);} |
+	factor ;
 
 factor:
-    NEGOP factor |
-    primary ;
+	primary | 
+	primary EXPOP factor { $$ = evaluateArithmetic($1, $2, $3); } |
+	NEGOP factor { $$ = evaluateUnary($2, $1); }
 
 primary:
 	'(' expression ')' {$$ = $2;} |
