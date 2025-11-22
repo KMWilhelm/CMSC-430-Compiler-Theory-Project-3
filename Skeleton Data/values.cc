@@ -76,23 +76,10 @@ double evaluateRelational(double left, Operators operator_, double right)
 	case NOT_EQUAL:
 		result = left != right;
 		break;
+	default:
+		break;
 	}
 	return result;
-}
-
-double evaluateLogical(double left, Operators operator_, double right)
-{
-	bool l = (left != 0.0);
-	bool r = (right != 0.0);
-	switch (operator_)
-	{
-	case AND:
-		return l && r;
-	case OR:
-		return l || r;
-	default:
-		return NAN;
-	}
 }
 
 double evaluateNot(double value)

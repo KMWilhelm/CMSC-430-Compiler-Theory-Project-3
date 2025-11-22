@@ -203,10 +203,10 @@ Nonterminals, with rules where they appear
     condition <value> (66)
         on left: 39 40
         on right: 23 25 32 39 45
-    and_condition (67)
+    and_condition <value> (67)
         on left: 41 42
         on right: 39 40 41
-    not_condition (68)
+    not_condition <value> (68)
         on left: 43 44
         on right: 41 42 43
     relation <value> (69)

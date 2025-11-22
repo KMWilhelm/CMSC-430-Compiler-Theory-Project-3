@@ -77,18 +77,17 @@ real    [0-9]*\.[0-9]+([eE][+-]?[0-9]+)?
 "%"         { ECHO; yylval.oper = REMAINDER; return(REMOP); }
 "^"		   { ECHO; yylval.oper = EXPONENT; return(EXPOP); }
 "~"		   { ECHO; yylval.oper = NEGATE; return(NEGOP); }
-"&"		   { ECHO; yylval.oper = AND; return(ANDOP); }
-
-"=>"		{ ECHO; return(ARROW); }
+"&"		   { ECHO; return(ANDOP); }
+"=>"		   { ECHO; return(ARROW); }
 "|"			{ ECHO; return(OROP); }
 "!"			{ ECHO; return(NOTOP); }
-">="        { ECHO; return(RELOP); }
-"<="        { ECHO; return(RELOP); }
-"<>"        { ECHO; return(RELOP); }
-"/="        { ECHO; return(RELOP); }
-"="         { ECHO; return(RELOP); }
-">"         { ECHO; return(RELOP); }
-"<"         { ECHO; return(RELOP); }
+">="        { ECHO; yylval.oper = GREATER_EQUAL; return RELOP; }
+"<="        { ECHO; yylval.oper = LESS_EQUAL; return RELOP; }
+"<>"        { ECHO; yylval.oper = NOT_EQUAL; return RELOP; }
+"/="        { ECHO; yylval.oper = NOT_EQUAL; return RELOP; }
+"="         { ECHO; yylval.oper = EQUAL; return RELOP; }
+">"         { ECHO; yylval.oper = GREATER; return RELOP; }
+"<"         { ECHO; yylval.oper = LESS; return RELOP; }
 begin		{ ECHO; return(BEGIN_); }
 case		{ ECHO; return(CASE); }
 character	{ ECHO; return(CHARACTER); }

@@ -49,7 +49,7 @@ double result;
 	RETURNS SWITCH WHEN ELSIF ENDFOLD ENDIF FOLD IF LEFT REAL RIGHT THEN
 
 %type <value> body statement_ statement cases case expression term primary
-	 condition relation factor
+	 condition relation factor and_condition not_condition
 
 %type <list> list expressions
 
@@ -114,7 +114,7 @@ statement_:
     
 statement:
 	expression |
-	WHEN condition ',' expression ':' expression {$$ = $2 ? $4 : $6;} |
+	WHEN condition ',' expression ':' expression {$$ = $2 ? $4 : $6;}  |
 	SWITCH expression IS cases OTHERS ARROW statement ';' ENDSWITCH 
 	{$$ = !isnan($4) ? $4 : $7;} |
 	IF condition THEN statement_ elsif_clauses ELSE statement_ ENDIF |
@@ -151,34 +151,41 @@ list_choice:
 	;
 
 condition:
-	condition OROP and_condition {$$ = $1 && $2;}
-  	| and_condition ;
+	condition OROP and_condition {$$ = $1 || $2;}
+  	| and_condition 
+	;
 
-  and_condition:
-    and_condition ANDOP not_condition 
-  	| not_condition ;
+and_condition:
+    and_condition ANDOP not_condition {$$ = $1 && $2;}
+  	| not_condition 
+	;
 
 not_condition:
-    NOTOP not_condition 
-  	| relation ;
+    NOTOP not_condition {$$ = !$1;}
+  	| relation 
+	;
 
 relation:
 	'(' condition ')'  {$$ = $2;}
-  	| expression RELOP expression {$$ = evaluateRelational($1, $2, $3);};
+  	| expression RELOP expression {$$ = evaluateRelational($1, $2, $3);}
+	;
 
 expression:
 	expression ADDOP term {$$ = evaluateArithmetic($1, $2, $3);} |
-	term ;
+	term
+	;
       
 term:
 	term MULOP factor {$$ = evaluateArithmetic($1, $2, $3);}  |
 	term REMOP factor {$$ = evaluateArithmetic($1, $2, $3);} |
-	factor ;
+	factor
+	;
 
 factor:
 	primary | 
 	primary EXPOP factor { $$ = evaluateArithmetic($1, $2, $3); } |
 	NEGOP factor { $$ = evaluateUnary($2, $1); }
+	;
 
 primary:
 	'(' expression ')' {$$ = $2;} |

@@ -586,9 +586,9 @@ static const yytype_uint8 yyrline[] =
       84,    85,    89,    92,    94,    98,    99,   102,   105,   106,
      109,   112,   113,   116,   117,   118,   120,   121,   125,   126,
      129,   130,   134,   135,   139,   140,   144,   145,   149,   150,
-     154,   155,   158,   159,   162,   163,   166,   167,   170,   171,
-     174,   175,   176,   179,   180,   181,   184,   185,   186,   187,
-     188,   189
+     154,   155,   159,   160,   164,   165,   169,   170,   174,   175,
+     179,   180,   181,   185,   186,   187,   191,   192,   193,   194,
+     195,   196
 };
 #endif
 
@@ -1589,72 +1589,84 @@ yyreduce:
 
   case 40: /* condition: condition OROP and_condition  */
 #line 154 "parser.y"
-                                     {(yyval.value) = (yyvsp[-2].value) && (yyvsp[-1].oper);}
+                                     {(yyval.value) = (yyvsp[-2].value) || (yyvsp[-1].oper);}
 #line 1594 "parser.tab.c"
     break;
 
-  case 46: /* relation: '(' condition ')'  */
-#line 166 "parser.y"
-                           {(yyval.value) = (yyvsp[-1].value);}
+  case 42: /* and_condition: and_condition ANDOP not_condition  */
+#line 159 "parser.y"
+                                      {(yyval.value) = (yyvsp[-2].value) && (yyvsp[-1].oper);}
 #line 1600 "parser.tab.c"
     break;
 
-  case 47: /* relation: expression RELOP expression  */
-#line 167 "parser.y"
-                                      {(yyval.value) = evaluateRelational((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
+  case 44: /* not_condition: NOTOP not_condition  */
+#line 164 "parser.y"
+                        {(yyval.value) = !(yyvsp[-1].oper);}
 #line 1606 "parser.tab.c"
     break;
 
-  case 48: /* expression: expression ADDOP term  */
-#line 170 "parser.y"
-                              {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
+  case 46: /* relation: '(' condition ')'  */
+#line 169 "parser.y"
+                           {(yyval.value) = (yyvsp[-1].value);}
 #line 1612 "parser.tab.c"
     break;
 
-  case 50: /* term: term MULOP factor  */
-#line 174 "parser.y"
-                          {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
+  case 47: /* relation: expression RELOP expression  */
+#line 170 "parser.y"
+                                      {(yyval.value) = evaluateRelational((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
 #line 1618 "parser.tab.c"
     break;
 
-  case 51: /* term: term REMOP factor  */
-#line 175 "parser.y"
-                          {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
+  case 48: /* expression: expression ADDOP term  */
+#line 174 "parser.y"
+                              {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
 #line 1624 "parser.tab.c"
     break;
 
-  case 54: /* factor: primary EXPOP factor  */
-#line 180 "parser.y"
-                             { (yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value)); }
+  case 50: /* term: term MULOP factor  */
+#line 179 "parser.y"
+                          {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
 #line 1630 "parser.tab.c"
     break;
 
-  case 55: /* factor: NEGOP factor  */
-#line 181 "parser.y"
-                     { (yyval.value) = evaluateUnary((yyvsp[0].value), (yyvsp[-1].oper)); }
+  case 51: /* term: term REMOP factor  */
+#line 180 "parser.y"
+                          {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
 #line 1636 "parser.tab.c"
     break;
 
-  case 56: /* primary: '(' expression ')'  */
-#line 184 "parser.y"
-                           {(yyval.value) = (yyvsp[-1].value);}
+  case 54: /* factor: primary EXPOP factor  */
+#line 186 "parser.y"
+                             { (yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value)); }
 #line 1642 "parser.tab.c"
     break;
 
-  case 60: /* primary: IDENTIFIER '(' expression ')'  */
-#line 188 "parser.y"
-                                      {(yyval.value) = extract_element((yyvsp[-3].iden), (yyvsp[-1].value)); }
+  case 55: /* factor: NEGOP factor  */
+#line 187 "parser.y"
+                     { (yyval.value) = evaluateUnary((yyvsp[0].value), (yyvsp[-1].oper)); }
 #line 1648 "parser.tab.c"
     break;
 
-  case 61: /* primary: IDENTIFIER  */
-#line 189 "parser.y"
-                   {if (!scalars.find((yyvsp[0].iden), (yyval.value))) appendError(UNDECLARED, (yyvsp[0].iden));}
+  case 56: /* primary: '(' expression ')'  */
+#line 191 "parser.y"
+                           {(yyval.value) = (yyvsp[-1].value);}
 #line 1654 "parser.tab.c"
     break;
 
+  case 60: /* primary: IDENTIFIER '(' expression ')'  */
+#line 195 "parser.y"
+                                      {(yyval.value) = extract_element((yyvsp[-3].iden), (yyvsp[-1].value)); }
+#line 1660 "parser.tab.c"
+    break;
 
-#line 1658 "parser.tab.c"
+  case 61: /* primary: IDENTIFIER  */
+#line 196 "parser.y"
+                   {if (!scalars.find((yyvsp[0].iden), (yyval.value))) appendError(UNDECLARED, (yyvsp[0].iden));}
+#line 1666 "parser.tab.c"
+    break;
+
+
+#line 1670 "parser.tab.c"
 
       default: break;
     }
@@ -1878,7 +1890,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 191 "parser.y"
+#line 198 "parser.y"
 
 
 void yyerror(const char* message) {

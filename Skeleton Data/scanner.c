@@ -945,7 +945,7 @@ YY_RULE_SETUP
 case 11:
 YY_RULE_SETUP
 #line 80 "scanner.l"
-{ ECHO; yylval.oper = AND; return(ANDOP); }
+{ ECHO; return(ANDOP); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
@@ -965,37 +965,37 @@ YY_RULE_SETUP
 case 15:
 YY_RULE_SETUP
 #line 85 "scanner.l"
-{ ECHO; return(RELOP); }
+{ ECHO; yylval.oper = GREATER_EQUAL; return RELOP; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 86 "scanner.l"
-{ ECHO; return(RELOP); }
+{ ECHO; yylval.oper = LESS_EQUAL; return RELOP; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 87 "scanner.l"
-{ ECHO; return(RELOP); }
+{ ECHO; yylval.oper = NOT_EQUAL; return RELOP; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 88 "scanner.l"
-{ ECHO; return(RELOP); }
+{ ECHO; yylval.oper = NOT_EQUAL; return RELOP; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 89 "scanner.l"
-{ ECHO; return(RELOP); }
+{ ECHO; yylval.oper = EQUAL; return RELOP; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 90 "scanner.l"
-{ ECHO; return(RELOP); }
+{ ECHO; yylval.oper = GREATER; return RELOP; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 91 "scanner.l"
-{ ECHO; return(RELOP); }
+{ ECHO; yylval.oper = LESS; return RELOP; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
