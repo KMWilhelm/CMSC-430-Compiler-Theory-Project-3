@@ -31,5 +31,3 @@ enum Operators
 double evaluateArithmetic(double left, Operators operator_, double right);
 double evaluateUnary(double value, Operators operator_);
 double evaluateRelational(double left, Operators operator_, double right);
-
-double evaluateNot(double value);

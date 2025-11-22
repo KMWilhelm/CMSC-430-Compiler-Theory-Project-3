@@ -81,8 +81,3 @@ double evaluateRelational(double left, Operators operator_, double right)
 	}
 	return result;
 }
-
-double evaluateNot(double value)
-{
-	return (value == 0.0) ? 1.0 : 0.0;
-}
