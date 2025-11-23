@@ -18,6 +18,8 @@ using namespace std;
 #include "listing.h"
 #include "symbols.h"
 
+double* globalParameters;
+int totalParameters = 0;
 int yylex();
 void yyerror(const char* message);
 double extract_element(CharPtr list_name, double subscript);
@@ -81,12 +83,14 @@ optional_parameters:
 ;
 
 parameters:
-    parameter
-  | parameters ',' parameter
-;
+    parameters ',' parameter
+  | parameter
+  ;
 
 parameter:
-    IDENTIFIER ':' type
+    IDENTIFIER ':' type {
+		scalars.insert($1, globalParameters[totalParameters++]);
+	}
 ;
 	
 optional_variable:
@@ -232,8 +236,16 @@ double extract_element(CharPtr list_name, double subscript) {
 
 int main(int argc, char *argv[]) {
 	firstLine();
+	globalParameters = new double[argc - 1];
+
+	// convert each argument to doubles and store in global array
+    for (int i = 1; i < argc; ++i) {
+        globalParameters[i - 1] = atof(argv[i]);
+    }
 	yyparse();
+
 	if (lastLine() == 0)
 		cout << "Result = " << result << endl;
+	delete[] globalParameters; // Free memory
 	return 0;
 } 

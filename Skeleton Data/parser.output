@@ -14,8 +14,8 @@ Grammar
     7 optional_parameters: ε
     8                    | parameters
 
-    9 parameters: parameter
-   10           | parameters ',' parameter
+    9 parameters: parameters ',' parameter
+   10           | parameter
 
    11 parameter: IDENTIFIER ':' type
 
@@ -95,7 +95,7 @@ Terminals, with rules where they appear
     $end (0) 0
     '(' (40) 16 45 55 59
     ')' (41) 16 45 55 59
-    ',' (44) 10 17 23
+    ',' (44) 9 17 23
     ':' (58) 11 14 15 23
     ';' (59) 1 2 3 14 15 20 21 24 29 30
     error (256) 3 21 30
@@ -157,7 +157,7 @@ Nonterminals, with rules where they appear
         on right: 2
     parameters (51)
         on left: 9 10
-        on right: 8 10
+        on right: 8 9
     parameter (52)
         on left: 11
         on right: 9 10
@@ -323,7 +323,7 @@ State 10
 State 11
 
     8 optional_parameters: parameters •
-   10 parameters: parameters • ',' parameter
+    9 parameters: parameters • ',' parameter
 
     ','  shift, and go to state 19
 
@@ -332,9 +332,9 @@ State 11
 
 State 12
 
-    9 parameters: parameter •
+   10 parameters: parameter •
 
-    $default  reduce using rule 9 (parameters)
+    $default  reduce using rule 10 (parameters)
 
 
 State 13
@@ -407,7 +407,7 @@ State 18
 
 State 19
 
-   10 parameters: parameters ',' • parameter
+    9 parameters: parameters ',' • parameter
 
     IDENTIFIER  shift, and go to state 9
 
@@ -665,9 +665,9 @@ State 43
 
 State 44
 
-   10 parameters: parameters ',' parameter •
+    9 parameters: parameters ',' parameter •
 
-    $default  reduce using rule 10 (parameters)
+    $default  reduce using rule 9 (parameters)
 
 
 State 45
