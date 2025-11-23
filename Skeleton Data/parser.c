@@ -584,11 +584,11 @@ static const yytype_uint8 yyrline[] =
 {
        0,    64,    64,    67,    68,    73,    74,    75,    78,    80,
       84,    85,    89,    92,    94,    98,    99,   102,   105,   106,
-     109,   112,   113,   116,   117,   118,   120,   121,   125,   126,
-     129,   130,   134,   135,   139,   140,   144,   145,   149,   150,
-     154,   155,   159,   160,   164,   165,   169,   170,   174,   175,
-     179,   180,   181,   185,   186,   187,   191,   192,   193,   194,
-     195,   196
+     109,   112,   113,   116,   117,   118,   120,   130,   134,   135,
+     138,   139,   143,   144,   155,   156,   160,   161,   165,   166,
+     170,   171,   175,   176,   180,   181,   185,   186,   190,   191,
+     195,   196,   197,   201,   202,   203,   207,   208,   209,   210,
+     211,   212
 };
 #endif
 
@@ -1569,104 +1569,130 @@ yyreduce:
 #line 1570 "parser.tab.c"
     break;
 
+  case 26: /* statement: IF condition THEN statement_ elsif_clauses ELSE statement_ ENDIF  */
+#line 121 "parser.y"
+    {
+      if ((yyvsp[-6].value) != 0.0) {
+        (yyval.value) = (yyvsp[-4].value);            /* then branch */
+      } else if (!isnan((yyvsp[-3].value))) {
+        (yyval.value) = (yyvsp[-3].value);            /* elsif branch result */
+      } else {
+        (yyval.value) = (yyvsp[-1].value);            /* else branch */
+      }
+    }
+#line 1584 "parser.tab.c"
+    break;
+
   case 28: /* cases: cases case  */
-#line 125 "parser.y"
+#line 134 "parser.y"
                    {(yyval.value) = !isnan((yyvsp[-1].value)) ? (yyvsp[-1].value) : (yyvsp[0].value);}
-#line 1576 "parser.tab.c"
+#line 1590 "parser.tab.c"
     break;
 
   case 29: /* cases: %empty  */
-#line 126 "parser.y"
+#line 135 "parser.y"
                {(yyval.value) = NAN;}
-#line 1582 "parser.tab.c"
+#line 1596 "parser.tab.c"
     break;
 
   case 30: /* case: CASE INT_LITERAL ARROW statement ';'  */
-#line 129 "parser.y"
+#line 138 "parser.y"
                                              {(yyval.value) = (yyvsp[(-2) - (5)].value) == (yyvsp[-3].value) ? (yyvsp[-1].value) : NAN;}
-#line 1588 "parser.tab.c"
+#line 1602 "parser.tab.c"
+    break;
+
+  case 32: /* elsif_clauses: %empty  */
+#line 143 "parser.y"
+                { (yyval.value) = NAN; }
+#line 1608 "parser.tab.c"
+    break;
+
+  case 33: /* elsif_clauses: ELSIF condition THEN statement_ elsif_clauses  */
+#line 145 "parser.y"
+    {
+      if ((yyvsp[-3].value) != 0.0) {
+        (yyval.value) = (yyvsp[-1].value);            /* this elsif branch */
+      } else {
+        (yyval.value) = (yyvsp[0].value);            /* pass along deeper elsif result */
+      }
+    }
+#line 1620 "parser.tab.c"
     break;
 
   case 40: /* condition: condition OROP and_condition  */
-#line 154 "parser.y"
+#line 170 "parser.y"
                                      {(yyval.value) = (yyvsp[-2].value) || (yyvsp[-1].oper);}
-#line 1594 "parser.tab.c"
+#line 1626 "parser.tab.c"
     break;
 
   case 42: /* and_condition: and_condition ANDOP not_condition  */
-#line 159 "parser.y"
+#line 175 "parser.y"
                                       {(yyval.value) = (yyvsp[-2].value) && (yyvsp[-1].oper);}
-#line 1600 "parser.tab.c"
-    break;
-
-  case 44: /* not_condition: NOTOP not_condition  */
-#line 164 "parser.y"
-                        {(yyval.value) = !(yyvsp[-1].oper);}
-#line 1606 "parser.tab.c"
+#line 1632 "parser.tab.c"
     break;
 
   case 46: /* relation: '(' condition ')'  */
-#line 169 "parser.y"
+#line 185 "parser.y"
                            {(yyval.value) = (yyvsp[-1].value);}
-#line 1612 "parser.tab.c"
+#line 1638 "parser.tab.c"
     break;
 
   case 47: /* relation: expression RELOP expression  */
-#line 170 "parser.y"
+#line 186 "parser.y"
                                       {(yyval.value) = evaluateRelational((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
-#line 1618 "parser.tab.c"
+#line 1644 "parser.tab.c"
     break;
 
   case 48: /* expression: expression ADDOP term  */
-#line 174 "parser.y"
+#line 190 "parser.y"
                               {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
-#line 1624 "parser.tab.c"
+#line 1650 "parser.tab.c"
     break;
 
   case 50: /* term: term MULOP factor  */
-#line 179 "parser.y"
+#line 195 "parser.y"
                           {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
-#line 1630 "parser.tab.c"
+#line 1656 "parser.tab.c"
     break;
 
   case 51: /* term: term REMOP factor  */
-#line 180 "parser.y"
+#line 196 "parser.y"
                           {(yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value));}
-#line 1636 "parser.tab.c"
+#line 1662 "parser.tab.c"
     break;
 
   case 54: /* factor: primary EXPOP factor  */
-#line 186 "parser.y"
+#line 202 "parser.y"
                              { (yyval.value) = evaluateArithmetic((yyvsp[-2].value), (yyvsp[-1].oper), (yyvsp[0].value)); }
-#line 1642 "parser.tab.c"
+#line 1668 "parser.tab.c"
     break;
 
   case 55: /* factor: NEGOP factor  */
-#line 187 "parser.y"
+#line 203 "parser.y"
                      { (yyval.value) = evaluateUnary((yyvsp[0].value), (yyvsp[-1].oper)); }
-#line 1648 "parser.tab.c"
+#line 1674 "parser.tab.c"
     break;
 
   case 56: /* primary: '(' expression ')'  */
-#line 191 "parser.y"
+#line 207 "parser.y"
                            {(yyval.value) = (yyvsp[-1].value);}
-#line 1654 "parser.tab.c"
+#line 1680 "parser.tab.c"
     break;
 
   case 60: /* primary: IDENTIFIER '(' expression ')'  */
-#line 195 "parser.y"
+#line 211 "parser.y"
                                       {(yyval.value) = extract_element((yyvsp[-3].iden), (yyvsp[-1].value)); }
-#line 1660 "parser.tab.c"
+#line 1686 "parser.tab.c"
     break;
 
   case 61: /* primary: IDENTIFIER  */
-#line 196 "parser.y"
+#line 212 "parser.y"
                    {if (!scalars.find((yyvsp[0].iden), (yyval.value))) appendError(UNDECLARED, (yyvsp[0].iden));}
-#line 1666 "parser.tab.c"
+#line 1692 "parser.tab.c"
     break;
 
 
-#line 1670 "parser.tab.c"
+#line 1696 "parser.tab.c"
 
       default: break;
     }
@@ -1890,7 +1916,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 198 "parser.y"
+#line 214 "parser.y"
 
 
 void yyerror(const char* message) {

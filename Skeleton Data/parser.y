@@ -49,7 +49,7 @@ double result;
 	RETURNS SWITCH WHEN ELSIF ENDFOLD ENDIF FOLD IF LEFT REAL RIGHT THEN
 
 %type <value> body statement_ statement cases case expression term primary
-	 condition relation factor and_condition not_condition
+	 condition relation factor and_condition not_condition elsif_clauses
 
 %type <list> list expressions
 
@@ -117,9 +117,21 @@ statement:
 	WHEN condition ',' expression ':' expression {$$ = $2 ? $4 : $6;}  |
 	SWITCH expression IS cases OTHERS ARROW statement ';' ENDSWITCH 
 	{$$ = !isnan($4) ? $4 : $7;} |
-	IF condition THEN statement_ elsif_clauses ELSE statement_ ENDIF |
-	FOLD direction operator list_choice ENDFOLD 
-;
+	IF condition THEN statement_ elsif_clauses ELSE statement_ ENDIF
+    {
+      if ($2 != 0.0) 
+	  {
+        $$ = $4;            
+      } else if (!isnan($5)) 
+	  {
+        $$ = $5;           
+      } else 
+	  {
+        $$ = $7;           
+      }
+    }
+    | FOLD direction operator list_choice ENDFOLD
+    ;
 
 cases:
 	cases case {$$ = !isnan($1) ? $1 : $2;} |
@@ -131,9 +143,18 @@ case:
 	;
 
 elsif_clauses:
-	%empty 
-	| ELSIF condition THEN statement_ elsif_clauses
-	;
+	 %empty { $$ = NAN; }
+    | ELSIF condition THEN statement_ elsif_clauses
+    {
+      if ($2 != 0.0) 
+	  {
+        $$ = $4;            
+      } else 
+	  {
+        $$ = $5;            
+      }
+    }
+    ;
 
 direction:
     LEFT
@@ -161,7 +182,7 @@ and_condition:
 	;
 
 not_condition:
-    NOTOP not_condition {$$ = !$1;}
+    NOTOP not_condition
   	| relation 
 	;
 

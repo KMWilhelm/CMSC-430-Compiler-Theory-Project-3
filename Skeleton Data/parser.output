@@ -188,7 +188,7 @@ Nonterminals, with rules where they appear
     case <value> (61)
         on left: 29 30
         on right: 27
-    elsif_clauses (62)
+    elsif_clauses <value> (62)
         on left: 31 32
         on right: 25 32
     direction (63)
