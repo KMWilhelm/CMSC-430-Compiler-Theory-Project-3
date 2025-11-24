@@ -25,6 +25,7 @@ int yylex();
 void yyerror(const char* message);
 double extract_element(CharPtr list_name, double subscript);
 
+
 Symbols<double> scalars;
 Symbols<vector<double>*> lists;
 double result;
@@ -55,6 +56,8 @@ double result;
 %type <value> body statement_ statement cases case expression term primary
 	 condition relation factor and_condition not_condition elsif_clauses direction
 
+%type <oper> operator
+
 %type <list> list expressions list_choice
 
 %left ADDOP
@@ -80,7 +83,7 @@ type:
 	;
 
 optional_parameters:
-  /* empty */
+  %empty
   | parameters
 ;
 
@@ -96,13 +99,15 @@ parameter:
 ;
 	
 optional_variable:
-	/* empty */
+	%empty
 	| optional_variable variable 
 	;
     
 variable:	
 	IDENTIFIER ':' type IS statement ';' {scalars.insert($1, $5);}; |
-	IDENTIFIER ':' LIST OF type IS list ';' {lists.insert($1, $7);} ;
+	IDENTIFIER ':' LIST OF type IS list ';' {lists.insert($1, $7);}
+	 ;
+	
 
 list:
 	'(' expressions ')' {$$ = $2;} ;
@@ -136,7 +141,7 @@ statement:
         $$ = $7;           
       }
     }
-    | FOLD direction operator list_choice ENDFOLD {$$ = fold($2, $<oper>3, $4);}
+    | FOLD direction operator list_choice ENDFOLD {$$ = fold($2, $3, $4);}
     ;
 
 cases:
@@ -145,7 +150,7 @@ cases:
 	
 case:
 	CASE INT_LITERAL ARROW statement ';' {$$ = $<value>-2 == $2 ? $4 : NAN;}
-	| error ';'
+	| error ;
 	;
 
 elsif_clauses:
@@ -168,9 +173,10 @@ direction:
 	;
 
 operator: 
-	ADDOP
-	| MULOP
-	;
+	  ADDOP { $$ = $1; }
+  | MULOP { $$ = $1; }
+  | REMOP { $$ = $1; }
+  | EXPOP { $$ = $1; }
 
 list_choice: 
 	list { $$ = $1; }
@@ -182,17 +188,19 @@ list_choice:
   ;
 
 condition:
-	condition OROP and_condition {$$ = $1 || $2;}
+	condition OROP and_condition { $$ = ($1 != 0.0 || $2 != 0.0) ? 1.0 : 0.0; }
   	| and_condition 
 	;
 
 and_condition:
-    and_condition ANDOP not_condition {$$ = $1 && $2;}
-  	| not_condition 
-	;
+     and_condition ANDOP not_condition {
+        $$ = ($1 != 0.0 && $3 != 0.0) ? 1.0 : 0.0;
+    }
+  | not_condition
+;
 
 not_condition:
-    NOTOP not_condition
+    NOTOP not_condition { $$ = ($2 == 0.0) ? 1.0 : 0.0;}
   	| relation 
 	;
 

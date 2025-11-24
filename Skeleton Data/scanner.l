@@ -31,8 +31,7 @@ static int hex_to_int(const char* s) {
     return v;
 }
 
-static int char_to_int(const char* yytext) {
-    // yytext looks like: 'a' or '\n' or '\f' etc.
+static int char_to_ascii(const char* yytext) {
     if (yytext[1] == '\\') {
         switch (yytext[2]) {
             case 'n': return '\n';   
@@ -119,7 +118,7 @@ then		{ ECHO; return(THEN); }
 {real}      { ECHO; yylval.value = atof(yytext); return(REAL_LITERAL); }
 {hex}    { ECHO; yylval.value = (double)hex_to_int(yytext + 1); return(INT_LITERAL); }
 {dec}		{ ECHO; yylval.value = atoi(yytext); return(INT_LITERAL); }
-{char}	{ ECHO; yylval.value = (double)char_to_int(yytext); return CHAR_LITERAL; }
+{char}	{ ECHO; yylval.value = char_to_ascii(yytext); return(CHAR_LITERAL); }
 {punc}		{ ECHO; return(yytext[0]); }
 .			{ ECHO; appendError(LEXICAL, yytext); }
 

@@ -32,7 +32,7 @@ double evaluateArithmetic(double left, Operators operator_, double right)
 		result = left / right;
 		break;
 	case REMAINDER:
-		result = fmod(left, right);
+		result = (right == 0.0) ? NAN : fmod(left, right);
 		break;
 	case EXPONENT:
 		result = pow(left, right);
@@ -60,22 +60,22 @@ double evaluateRelational(double left, Operators operator_, double right)
 	switch (operator_)
 	{
 	case LESS:
-		result = left < right;
+		result = (left < right) ? 1.0 : 0.0;
 		break;
 	case LESS_EQUAL:
-		result = left <= right;
+		result = (left <= right) ? 1.0 : 0.0;
 		break;
 	case GREATER:
-		result = left > right;
+		result = (left > right) ? 1.0 : 0.0;
 		break;
 	case GREATER_EQUAL:
-		result = left >= right;
+		result = (left >= right) ? 1.0 : 0.0;
 		break;
 	case EQUAL:
-		result = left == right;
+		result = (left == right) ? 1.0 : 0.0;
 		break;
 	case NOT_EQUAL:
-		result = left != right;
+		result = (left != right) ? 1.0 : 0.0;
 		break;
 	default:
 		break;
@@ -83,12 +83,12 @@ double evaluateRelational(double left, Operators operator_, double right)
 	return result;
 }
 
-double fold(bool direction, Operators operator_, vector<double> *list)
+double fold(double direction, Operators operator_, vector<double> *list)
 {
 	if (!list || list->empty())
 		return NAN;
 
-	if (direction)
+	if (direction == 1.0)
 	{
 		double acc = (*list)[0];
 		for (size_t i = 1; i < list->size(); ++i)
