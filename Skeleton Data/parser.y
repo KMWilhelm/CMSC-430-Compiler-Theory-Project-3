@@ -12,6 +12,7 @@
 #include <vector>
 #include <map>
 
+
 using namespace std;
 
 #include "values.h"
@@ -36,14 +37,15 @@ double result;
 	CharPtr iden;
 	Operators oper;
 	double value;
-	vector<double>* list;
+	std::vector<double>* list;
 }
 
 %token <iden> IDENTIFIER
 
-%token <value> INT_LITERAL CHAR_LITERAL REAL_LITERAL
+%token <value> INT_LITERAL CHAR_LITERAL REAL_LITERAL 
 
-%token <oper> ADDOP MULOP REMOP EXPOP NEGOP ANDOP RELOP OROP NOTOP
+%token <oper> ADDOP MULOP REMOP EXPOP NEGOP ANDOP RELOP OROP NOTOP 
+
 
 %token ARROW
 
@@ -51,9 +53,9 @@ double result;
 	RETURNS SWITCH WHEN ELSIF ENDFOLD ENDIF FOLD IF LEFT REAL RIGHT THEN
 
 %type <value> body statement_ statement cases case expression term primary
-	 condition relation factor and_condition not_condition elsif_clauses
+	 condition relation factor and_condition not_condition elsif_clauses direction
 
-%type <list> list expressions
+%type <list> list expressions list_choice
 
 %left ADDOP
 %left MULOP REMOP
@@ -134,7 +136,7 @@ statement:
         $$ = $7;           
       }
     }
-    | FOLD direction operator list_choice ENDFOLD
+    | FOLD direction operator list_choice ENDFOLD {$$ = fold($2, $<oper>3, $4);}
     ;
 
 cases:
@@ -161,8 +163,8 @@ elsif_clauses:
     ;
 
 direction:
-    LEFT
-  	| RIGHT
+    LEFT { $$ = 1.0; }
+  	| RIGHT { $$ = 0.0; }
 	;
 
 operator: 
@@ -171,9 +173,13 @@ operator:
 	;
 
 list_choice: 
-	list 
-	| IDENTIFIER 
-	;
+	list { $$ = $1; }
+  | IDENTIFIER {
+        std::vector<double>* l;
+        if (lists.find($1, l)) $$ = l;
+        else { appendError(UNDECLARED, $1); $$ = nullptr; }
+    }
+  ;
 
 condition:
 	condition OROP and_condition {$$ = $1 || $2;}

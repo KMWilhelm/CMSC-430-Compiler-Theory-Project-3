@@ -191,13 +191,13 @@ Nonterminals, with rules where they appear
     elsif_clauses <value> (62)
         on left: 31 32
         on right: 25 32
-    direction (63)
+    direction <value> (63)
         on left: 33 34
         on right: 26
     operator (64)
         on left: 35 36
         on right: 26
-    list_choice (65)
+    list_choice <list> (65)
         on left: 37 38
         on right: 26
     condition <value> (66)

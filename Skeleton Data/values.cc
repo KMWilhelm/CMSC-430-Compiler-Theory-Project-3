@@ -12,6 +12,7 @@ using namespace std;
 
 #include "values.h"
 #include "listing.h"
+#include <vector>
 
 double evaluateArithmetic(double left, Operators operator_, double right)
 {
@@ -80,4 +81,25 @@ double evaluateRelational(double left, Operators operator_, double right)
 		break;
 	}
 	return result;
+}
+
+double fold(bool direction, Operators operator_, vector<double> *list)
+{
+	if (!list || list->empty())
+		return NAN;
+
+	if (direction)
+	{
+		double acc = (*list)[0];
+		for (size_t i = 1; i < list->size(); ++i)
+			acc = evaluateArithmetic(acc, operator_, (*list)[i]);
+		return acc;
+	}
+	else
+	{
+		double acc = (*list)[list->size() - 1];
+		for (int i = (int)list->size() - 2; i >= 0; --i)
+			acc = evaluateArithmetic((*list)[i], operator_, acc);
+		return acc;
+	}
 }

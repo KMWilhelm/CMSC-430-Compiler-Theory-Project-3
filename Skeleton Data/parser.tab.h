@@ -100,12 +100,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 35 "parser.y"
+#line 36 "parser.y"
 
 	CharPtr iden;
 	Operators oper;
 	double value;
-	vector<double>* list;
+	std::vector<double>* list;
 
 #line 111 "parser.tab.h"
 

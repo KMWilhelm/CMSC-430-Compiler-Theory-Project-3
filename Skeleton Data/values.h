@@ -6,6 +6,8 @@
 // This file contains type definitions and the function
 // definitions for the evaluation functions
 
+#include <vector>
+
 typedef char *CharPtr;
 
 enum Operators
@@ -31,3 +33,4 @@ enum Operators
 double evaluateArithmetic(double left, Operators operator_, double right);
 double evaluateUnary(double value, Operators operator_);
 double evaluateRelational(double left, Operators operator_, double right);
+double fold(bool direction, Operators operator_, vector<double> *list);
